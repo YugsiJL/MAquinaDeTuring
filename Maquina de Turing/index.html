@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máquina de Turing Interactiva</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="turing-machine">
+        <h1>Máquina de Turing Interactiva</h1>
+        <div id="tape"></div>
+        <div id="controls">
+            <button id="prev">Anterior</button>
+            <button id="next">Siguiente</button>
+            <button id="reset">Reiniciar</button>
+        </div>
+        <div id="state">Estado: <span id="current-state">q0</span></div>
+
+        <!-- Configuración de la cinta -->
+        <div class="config-section">
+            <h2>Configuración de la Cinta</h2>
+            <input type="text" id="tape-input" placeholder="Ej: 1010">
+            <button id="set-tape">Establecer Cinta</button>
+        </div>
+
+        <!-- Guardar y cargar configuraciones -->
+        <div class="config-section">
+            <h2>Guardar/Cargar Configuración</h2>
+            <button id="save-config">Guardar Configuración</button>
+            <button id="load-config">Cargar Configuración</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
