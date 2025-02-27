@@ -64,8 +64,33 @@ button:hover {
 }
 
 input {
-    padding: 10px;
-    font-size: 16px;
+    padding: 5px;
+    font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    width: 50px;
+    text-align: center;
+}
+
+.rule {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.rule input {
+    margin: 0 5px;
+}
+
+.delete-rule {
+    margin-left: 10px;
+    background-color: #ff4d4d;
+}
+
+.delete-rule:hover {
+    background-color: #cc0000;
+}
+
+#rules-container {
+    margin-bottom: 10px;
 }

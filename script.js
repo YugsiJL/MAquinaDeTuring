@@ -6,14 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetButton = document.getElementById('reset');
     const tapeInput = document.getElementById('tape-input');
     const setTapeButton = document.getElementById('set-tape');
-    const saveConfigButton = document.getElementById('save-config');
-    const loadConfigButton = document.getElementById('load-config');
+    const rulesContainer = document.getElementById('rules-container');
+    const addRuleButton = document.getElementById('add-rule');
+    const setRulesButton = document.getElementById('set-rules');
 
-    let tape = ['B', '1', '0', '1', 'B']; // Cinta inicial
+    let tape = ['B', '1', '1', '0', 'B']; // Cinta inicial
     let headPosition = 1; // Posición inicial de la cabeza
     let currentState = 'q0'; // Estado inicial
+    let rules = {}; // Reglas de transición
 
-    // Función para renderizar la cinta
     function renderTape() {
         tapeElement.innerHTML = '';
         tape.forEach((cell, index) => {
@@ -27,39 +28,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Función para actualizar el estado
     function updateState(newState) {
         currentState = newState;
         currentStateElement.textContent = currentState;
     }
 
-    // Función para avanzar un paso
+    function parseRules() {
+        const newRules = {};
+        rulesContainer.querySelectorAll('.rule').forEach(rule => {
+            const inputs = rule.querySelectorAll('input');
+            const currentState = inputs[0].value;
+            const readSymbol = inputs[1].value;
+            const newState = inputs[2].value;
+            const writeSymbol = inputs[3].value;
+            const move = inputs[4].value;
+            if (currentState && readSymbol && newState && writeSymbol && move) {
+                if (!newRules[currentState]) newRules[currentState] = {};
+                newRules[currentState][readSymbol] = { newState, writeSymbol, move };
+            }
+        });
+        return newRules;
+    }
+
     function step() {
         const currentSymbol = tape[headPosition];
-        // Definir las transiciones de la Máquina de Turing
-        if (currentState === 'q0' && currentSymbol === '1') {
-            tape[headPosition] = '0';
-            headPosition++;
-            updateState('q1');
-        } else if (currentState === 'q1' && currentSymbol === '0') {
-            tape[headPosition] = '1';
-            headPosition--;
-            updateState('q0');
+        if (rules[currentState] && rules[currentState][currentSymbol]) {
+            const { newState, writeSymbol, move } = rules[currentState][currentSymbol];
+            tape[headPosition] = writeSymbol;
+            headPosition += move === 'R' ? 1 : -1;
+            updateState(newState);
         } else {
-            alert('Máquina detenida');
+            alert('Máquina detenida: No hay regla definida');
         }
         renderTape();
     }
 
-    // Función para reiniciar la máquina
     function reset() {
-        tape = ['B', '1', '0', '1', 'B'];
+        tape = ['B', '1', '1', '0', 'B'];
         headPosition = 1;
         updateState('q0');
         renderTape();
     }
 
-    // Establecer la cinta inicial
     setTapeButton.addEventListener('click', () => {
         const input = tapeInput.value.trim();
         if (input) {
@@ -69,33 +79,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Guardar configuración
-    saveConfigButton.addEventListener('click', () => {
-        const config = {
-            tape,
-            headPosition,
-            currentState,
-        };
-        localStorage.setItem('turingConfig', JSON.stringify(config));
-        alert('Configuración guardada');
+    addRuleButton.addEventListener('click', () => {
+        const ruleDiv = document.createElement('div');
+        ruleDiv.classList.add('rule');
+        ruleDiv.innerHTML = `
+            (<input type="text" class="state-input" placeholder="q0">, 
+            <input type="text" class="symbol-input" placeholder="0">) -> 
+            (<input type="text" class="state-input" placeholder="q1">, 
+            <input type="text" class="symbol-input" placeholder="1">, 
+            <input type="text" class="move-input" placeholder="R">)
+            <button class="delete-rule">Eliminar</button>
+        `;
+        rulesContainer.appendChild(ruleDiv);
+
+        // Agregar evento para eliminar la regla
+        ruleDiv.querySelector('.delete-rule').addEventListener('click', () => {
+            ruleDiv.remove();
+        });
     });
 
-    // Cargar configuración
-    loadConfigButton.addEventListener('click', () => {
-        const config = JSON.parse(localStorage.getItem('turingConfig'));
-        if (config) {
-            tape = config.tape;
-            headPosition = config.headPosition;
-            currentState = config.currentState;
-            updateState(currentState);
-            renderTape();
-            alert('Configuración cargada');
-        } else {
-            alert('No hay configuración guardada');
-        }
+    setRulesButton.addEventListener('click', () => {
+        rules = parseRules();
+        alert('Reglas establecidas');
     });
 
-    // Eventos de los botones
     prevButton.addEventListener('click', () => {
         if (headPosition > 0) {
             headPosition--;
@@ -107,6 +114,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetButton.addEventListener('click', reset);
 
-    // Renderizar la cinta inicial
     renderTape();
 });

@@ -24,11 +24,21 @@
             <button id="set-tape">Establecer Cinta</button>
         </div>
 
-        <!-- Guardar y cargar configuraciones -->
+        <!-- Definir reglas de transición -->
         <div class="config-section">
-            <h2>Guardar/Cargar Configuración</h2>
-            <button id="save-config">Guardar Configuración</button>
-            <button id="load-config">Cargar Configuración</button>
+            <h2>Reglas de Transición</h2>
+            <div id="rules-container">
+                <div class="rule">
+                    (<input type="text" class="state-input" placeholder="q0">, 
+                    <input type="text" class="symbol-input" placeholder="0">) -> 
+                    (<input type="text" class="state-input" placeholder="q1">, 
+                    <input type="text" class="symbol-input" placeholder="1">, 
+                    <input type="text" class="move-input" placeholder="R">)
+                    <button class="delete-rule">Eliminar</button>
+                </div>
+            </div>
+            <button id="add-rule">Agregar Regla</button>
+            <button id="set-rules">Establecer Reglas</button>
         </div>
     </div>
     <script src="script.js"></script>
